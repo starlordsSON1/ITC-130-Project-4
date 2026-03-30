@@ -2,6 +2,35 @@ namespace Aiden_Tschebykin_4
 {
     public partial class Project4Form : Form
     {
+        // Helper: search for drinktypes.txt in app folder and parent folders and common project subfolder
+        private string? FindDrinkTypesFile()
+        {
+            const string filename = "drinktypes.txt";
+            // Start from application's base directory
+            string? dir = AppDomain.CurrentDomain.BaseDirectory;
+
+            for (int i = 0; i < 8 && !string.IsNullOrEmpty(dir); i++)
+            {
+                string tryPath = Path.Combine(dir, filename);
+                if (File.Exists(tryPath))
+                    return tryPath;
+
+                // also check in a likely project subfolder named "Aiden Tschebykin 4"
+                string tryPath2 = Path.Combine(dir, "Aiden Tschebykin 4", filename);
+                if (File.Exists(tryPath2))
+                    return tryPath2;
+
+                dir = Path.GetDirectoryName(dir);
+            }
+
+            // As a last resort, check current working directory
+            string cwdTry = Path.Combine(Environment.CurrentDirectory, filename);
+            if (File.Exists(cwdTry))
+                return cwdTry;
+
+            return null;
+        }
+
         public Project4Form()
         {
             InitializeComponent();
@@ -14,11 +43,11 @@ namespace Aiden_Tschebykin_4
         {
             MessageBox.Show("Welcome to our ordering application!", "Welcome", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            // Attempt to load drink types from drinktypes.txt located next to executable
+            // Attempt to load drink types from drinktypes.txt located next to executable or in project folder
             try
             {
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "drinktypes.txt");
-                if (File.Exists(path))
+                string? path = FindDrinkTypesFile();
+                if (!string.IsNullOrEmpty(path) && File.Exists(path))
                 {
                     listBoxDrinkType.Items.Clear();
                     using (var sr = new StreamReader(path))
@@ -31,6 +60,10 @@ namespace Aiden_Tschebykin_4
                         }
                     }
                     listBoxDrinkType.Sorted = true;
+                }
+                else
+                {
+                    // no file found, that's fine — list can be managed via UI
                 }
             }
             catch (Exception ex)
