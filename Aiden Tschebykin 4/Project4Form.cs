@@ -7,6 +7,38 @@ namespace Aiden_Tschebykin_4
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Form load: welcome message and load drink types from file.
+        /// </summary>
+        private void Project4Form_Load(object? sender, EventArgs e)
+        {
+            MessageBox.Show("Welcome to our ordering application!", "Welcome", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Attempt to load drink types from drinktypes.txt located next to executable
+            try
+            {
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "drinktypes.txt");
+                if (File.Exists(path))
+                {
+                    listBoxDrinkType.Items.Clear();
+                    using (var sr = new StreamReader(path))
+                    {
+                        string? line;
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            if (!string.IsNullOrWhiteSpace(line))
+                                listBoxDrinkType.Items.Add(line.Trim());
+                        }
+                    }
+                    listBoxDrinkType.Sorted = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not load drink types: {ex.Message}", "Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private void btnCalculate_Click(object? sender, EventArgs e)
         {
             // Clear message box
@@ -69,6 +101,10 @@ namespace Aiden_Tschebykin_4
             txtDiscount.Text = discount.ToString("C");
             txtTotal.Text = total.ToString("C");
 
+            // Add code to generate a lucky number between 1 and 50
+            var rand = new Random();
+            int lucky = rand.Next(1, 51);
+
             // Display message using switch on quantity
             string qtyMessage;
             switch (quantity)
@@ -91,7 +127,7 @@ namespace Aiden_Tschebykin_4
             string size = rdoSmall.Checked ? "Small" : rdoMedium.Checked ? "Medium" : rdoLarge.Checked ? "Large" : "(no size)";
             string drinkDisplay = string.IsNullOrEmpty(drinkType) ? "(no drink selected)" : drinkType;
 
-            MessageBox.Show($"{qtyMessage}\nCustomer: {customer}\nDrink: {drinkDisplay}\nSize: {size}", "Order Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"{qtyMessage}\nCustomer: {customer}\nDrink: {drinkDisplay}\nSize: {size}\nYour lucky number is {lucky}.", "Order Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -110,11 +146,37 @@ namespace Aiden_Tschebykin_4
 
             // No selection in drink list
             listBoxDrinkType.ClearSelected();
+            comboCoffeeFlavor.Text = string.Empty;
 
             // Uncheck employee
             chkEmployee.Checked = false;
 
             txtQuantity.Focus();
+        }
+        /// <summary>
+        /// Add coffee flavor from combo box to drink types list box.
+        /// </summary>
+        private void btnAddCoffee_Click(object? sender, EventArgs e)
+        {
+            string flavor = comboCoffeeFlavor.Text?.Trim() ?? string.Empty;
+            if (string.IsNullOrEmpty(flavor))
+            {
+                MessageBox.Show("Please enter a coffee flavor to add.", "Missing Flavor", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                comboCoffeeFlavor.Focus();
+                return;
+            }
+
+            listBoxDrinkType.Items.Add(flavor);
+            listBoxDrinkType.Sorted = true;
+            comboCoffeeFlavor.Text = string.Empty;
+        }
+
+        /// <summary>
+        /// Clear all drink types from the list box.
+        /// </summary>
+        private void btnClearDrinkTypes_Click(object? sender, EventArgs e)
+        {
+            listBoxDrinkType.Items.Clear();
         }
         private void btnExit_Click(object? sender, EventArgs e)
         {
