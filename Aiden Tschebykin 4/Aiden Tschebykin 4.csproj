@@ -9,4 +9,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="drinktypes.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="drinktypes.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

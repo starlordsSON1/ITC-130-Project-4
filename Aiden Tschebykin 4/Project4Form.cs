@@ -2,23 +2,52 @@ namespace Aiden_Tschebykin_4
 {
     public partial class Project4Form : Form
     {
+        
+        private string? FindDrinkTypesFile()
+        {
+            const string filename = "drinktypes.txt";
+            // Start from application's base directory
+            string? dir = AppDomain.CurrentDomain.BaseDirectory;
+
+            for (int i = 0; i < 8 && !string.IsNullOrEmpty(dir); i++)
+            {
+                string tryPath = Path.Combine(dir, filename);
+                if (File.Exists(tryPath))
+                    return tryPath;
+
+                
+                string tryPath2 = Path.Combine(dir, "Aiden Tschebykin 4", filename);
+                if (File.Exists(tryPath2))
+                    return tryPath2;
+
+                dir = Path.GetDirectoryName(dir);
+            }
+
+            // As a last resort, check current working directory
+            string cwdTry = Path.Combine(Environment.CurrentDirectory, filename);
+            if (File.Exists(cwdTry))
+                return cwdTry;
+
+            return null;
+        }
+
         public Project4Form()
         {
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Form load: welcome message and load drink types from file.
-        /// </summary>
+       
+       //Welcome message and load drink types from file.
+       
         private void Project4Form_Load(object? sender, EventArgs e)
         {
             MessageBox.Show("Welcome to our ordering application!", "Welcome", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            // Attempt to load drink types from drinktypes.txt located next to executable
+            // Attempt to load drink types from drinktypes.txt located next to executable or in project folder
             try
             {
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "drinktypes.txt");
-                if (File.Exists(path))
+                string? path = FindDrinkTypesFile();
+                if (!string.IsNullOrEmpty(path) && File.Exists(path))
                 {
                     listBoxDrinkType.Items.Clear();
                     using (var sr = new StreamReader(path))
@@ -31,6 +60,10 @@ namespace Aiden_Tschebykin_4
                         }
                     }
                     listBoxDrinkType.Sorted = true;
+                }
+                else
+                {
+                    
                 }
             }
             catch (Exception ex)
@@ -153,9 +186,9 @@ namespace Aiden_Tschebykin_4
 
             txtQuantity.Focus();
         }
-        /// <summary>
+        
         /// Add coffee flavor from combo box to drink types list box.
-        /// </summary>
+        
         private void btnAddCoffee_Click(object? sender, EventArgs e)
         {
             string flavor = comboCoffeeFlavor.Text?.Trim() ?? string.Empty;
@@ -171,9 +204,9 @@ namespace Aiden_Tschebykin_4
             comboCoffeeFlavor.Text = string.Empty;
         }
 
-        /// <summary>
+      
         /// Clear all drink types from the list box.
-        /// </summary>
+        
         private void btnClearDrinkTypes_Click(object? sender, EventArgs e)
         {
             listBoxDrinkType.Items.Clear();
