@@ -2,7 +2,7 @@ namespace Aiden_Tschebykin_4
 {
     public partial class Project4Form : Form
     {
-        // Helper: search for drinktypes.txt in app folder and parent folders and common project subfolder
+        
         private string? FindDrinkTypesFile()
         {
             const string filename = "drinktypes.txt";
@@ -15,7 +15,7 @@ namespace Aiden_Tschebykin_4
                 if (File.Exists(tryPath))
                     return tryPath;
 
-                // also check in a likely project subfolder named "Aiden Tschebykin 4"
+                
                 string tryPath2 = Path.Combine(dir, "Aiden Tschebykin 4", filename);
                 if (File.Exists(tryPath2))
                     return tryPath2;
@@ -36,9 +36,9 @@ namespace Aiden_Tschebykin_4
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Form load: welcome message and load drink types from file.
-        /// </summary>
+       
+       //Welcome message and load drink types from file.
+       
         private void Project4Form_Load(object? sender, EventArgs e)
         {
             MessageBox.Show("Welcome to our ordering application!", "Welcome", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -63,7 +63,7 @@ namespace Aiden_Tschebykin_4
                 }
                 else
                 {
-                    // no file found, that's fine — list can be managed via UI
+                    
                 }
             }
             catch (Exception ex)
@@ -186,9 +186,9 @@ namespace Aiden_Tschebykin_4
 
             txtQuantity.Focus();
         }
-        /// <summary>
+        
         /// Add coffee flavor from combo box to drink types list box.
-        /// </summary>
+        
         private void btnAddCoffee_Click(object? sender, EventArgs e)
         {
             string flavor = comboCoffeeFlavor.Text?.Trim() ?? string.Empty;
@@ -204,9 +204,9 @@ namespace Aiden_Tschebykin_4
             comboCoffeeFlavor.Text = string.Empty;
         }
 
-        /// <summary>
+      
         /// Clear all drink types from the list box.
-        /// </summary>
+        
         private void btnClearDrinkTypes_Click(object? sender, EventArgs e)
         {
             listBoxDrinkType.Items.Clear();
